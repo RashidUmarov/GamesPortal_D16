@@ -1,0 +1,21 @@
+{% extends 'default.html' %}
+
+{% block content %}
+<h1>Отклик на объявление</h1>
+<hr>
+
+<p style="text-align: left;"> {{post.post.created|date:'d.m.Y'}}&nbsp;в категории {{ post.post.category }} &nbsp;
+    было опубликовано объявление <a href="{% url 'post_detail' pk=post.post.id %}">{{ post.post.title }}</a>
+
+<hr>
+<p style="text-align: left;"> {{ post.user }} написал: </p>
+<div style="text-align: left;">
+    {{post.text}}
+</div>
+
+{% if not post.accepted %}
+<button class="btn btn-outline-primary" type="submit"><a href="{% url 'response_accept' pk=post.id %}">Принять отзыв</a></button>
+{% else %}
+<button class="btn btn-outline-primary" type="submit"><a href="{% url 'response_list' %}">Назад</a></button>
+{% endif %}
+{% endblock content %}

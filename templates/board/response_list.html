@@ -1,0 +1,67 @@
+{# наследуемся от шаблона default.html #}
+{% extends 'default.html' %}
+
+{% load custom_tags %}
+{% block title %}
+Отклики на объявления
+{% endblock title %}
+
+{% block content %}
+<h1 style="text-align: left;">Все отклики на {{ time_now|date:'d.m.Y' }} (всего {{posts_amount}})</h1>
+
+{% if posts %}
+<table cellspacing="0" cellpadding="3">
+    <thead>
+    <tr>
+        <th>
+            Дата
+        </th>
+        <th>
+            Отозвался
+        </th>
+        <th>
+            Отклик
+        </th>
+        <th>На объявление</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    {% for post in posts %}
+    <tr>
+        <td style="text-align: left;">{{ post.created|date:'d.m.Y' }}</td>
+        <td style="text-align: left;">{{ post.user }}</td>
+
+        <td style="text-align: left;"><a href="{% url 'response' pk=post.id %}">{{ post.text|truncatewords:20 }}</a></td>
+
+        <td style="text-align: left;">{{ post.post.title|truncatewords:10 }}</td>
+        <td>
+            {# проверим право на редактирование поста #}
+            {% if request.user.is_authenticated and request.user == post.post.author.author %}
+            <a href="{% url 'response_delete' pk=post.id %}">Удалить</a>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<h2>Откликов нет</h2>
+{% endif %}
+<br>
+
+<a href="?{% url_replace page=1 %}">1</a>
+{% if page_obj.previous_page_number != 1 %}
+...
+<a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+{% endif %}
+{% if page_obj.has_next %}
+<a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+{% if paginator.num_pages != page_obj.next_page_number %}
+...
+<a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+{% endif %}
+{% endif %}
+{% endblock content %}
+

@@ -1,0 +1,75 @@
+{# наследуемся от шаблона default.html #}
+{% extends 'default.html' %}
+
+{% load custom_tags %}
+{% block title %}
+Объявления
+{% endblock title %}
+
+{% block content %}
+<h1 style="text-align: left;">Все объявления на {{ time_now|date:'d.m.Y' }} (всего {{posts_amount}})
+</h1>
+
+{% if posts %}
+<table cellspacing="0" cellpadding="3">
+    <thead>
+    <tr>
+        <th>
+            Заголовок
+        </th>
+        <th>
+            Дата
+        </th>
+        <th>
+            Категория
+        </th>
+        <th>
+            Автор
+        </th>
+        <th>
+            Текст
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+
+    {% for post in posts %}
+    <tr>
+        <td style="text-align: left;"><a href="{% url 'post_detail' pk=post.id %}">{{ post.title|truncatewords:8 }}</a>
+        </td>
+        <td style="text-align: left;">{{ post.created|date:'d.m.Y' }}</td>
+        <td style="text-align: center;">{{ post.category }}</td>
+        <td style="text-align: left;"><a href="{% url 'profile' pk=post.author.author.id %}">{{ post.author }}</a></td>
+        <td style="text-align: left;">{{ post.content|truncatewords:20 }}</td>
+
+
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<h2>Объявления не найдены!</h2>
+{% endif %}
+<br>
+
+
+{# Информация о предыдущих страницах #}
+{% if page_obj.has_previous %}
+<a href="?{% url_replace page=1 %}">1</a>
+{% if page_obj.previous_page_number != 1 %}
+...
+<a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+{% endif %}
+{% endif %}
+
+{{ page_obj.number }}
+
+{% if page_obj.has_next %}
+<a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+{% if paginator.num_pages != page_obj.next_page_number %}
+...
+<a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+{% endif %}
+{% endif %}
+{% endblock content %}
+

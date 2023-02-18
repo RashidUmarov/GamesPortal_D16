@@ -1,0 +1,59 @@
+{% extends 'default.html' %}
+
+{% load custom_filters %}
+{% load custom_tags %}
+{% block title %}
+<p> {{ user }} </p>>
+{% endblock title %}
+
+{% block content %}
+{% if request.user.id == user.id %}
+<H3> Welcome, {{ user }} !</H3>
+{% else %}
+<H2> Profile of user: {{ user }} </H2>
+{% endif %}
+
+<p style="text-align: left;"> Username: {{ user.username }} </p>
+{% if request.user.id == user.id %}
+<p style="text-align: left;"> Email: {{ user.email }} </p>
+{% else  %}
+<p style="text-align: left;"> {{ user.first_name }} {{ user.last_name }} </p>
+{% endif %}
+
+<p style="text-align: left;"> Joined: {{ user.date_joined|date:'d.m.Y' }} </p>
+<p style="text-align: left;"> Опубликовал объявлений: {{ posts }}
+    {% if posts %}
+    <a href="{% url 'user_posts' pk=user.pk %}">Посмотреть объявления</a>
+    {% endif %}
+</p>
+{% if request.user.id == user.id %}
+<p style="text-align: left;"> Получил откликов на объявления: {{ responses }}
+    {% if responses  %}
+    <a href="{% url 'response_list' %}">Посмотреть
+    отклики</a>
+    {% endif %}
+</p>
+{% endif %}
+<div align="left">
+    {% if request.user.is_authenticated %}
+    {% if request.user.id == user.id %}
+
+    {#  очень неуклюжий блок проверки того, что User является Автором с подпиской на новости #}
+    {% if user|user_is_author %}
+    <button class="btn btn-outline-primary" type="submit"><a class="nav-link" href="{% url 'unsubscribe' %}">Отписаться от рассылки</a></button>
+    {% else %}
+    <button class="btn btn-outline-primary" type="submit"><a class="nav-link" href="{% url 'subscribe' %}">Подписаться
+        на рассылку</a></button>
+    {% endif %}
+
+    <hr>
+    <h3> Изменить данные </h3>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Сохранить"/>
+    </form>
+    {% endif %}
+    {% endif %}
+</div>
+{% endblock content %}
