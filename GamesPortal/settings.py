@@ -20,7 +20,6 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -29,9 +28,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-SITE_ID =1
+SITE_ID = 1
 ALLOWED_HOSTS = []
-
 
 # Application definition
 INSTALLED_APPS = [
@@ -42,11 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'ckeditor',
-    'ckeditor_uploader',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'ckeditor',
+    'ckeditor_uploader',
 
     'accounts',  # регистрация
     'board.apps.BoardConfig',  # доска объявлений
@@ -82,7 +80,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'GamesPortal.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -92,7 +89,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -112,9 +108,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# заменяет реальную отправку сообщений по адресам, вместо отправки сообщения будут формироваться и отражаться в консоли
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -123,40 +116,17 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-    BASE_DIR / "board",
-]
-
-#n для работы с медиафайлами
+STATIC_ROOT = BASE_DIR / 'static'
 MEDIA_URL = '/media/'
-MEDIA_ROOT = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # CKEditor
-# CKEDITOR_BASEPATH = "static/ckeditor/ckeditor/"  убрал
-CKEDITOR_UPLOAD_PATH = 'uploads/'
-CKEDITOR_UPLOAD_SLUGIFY_FILENAME = False
-CKEDITOR_RESTRICT_BY_USER = True
-CKEDITOR_BROWSE_SHOW_DIRS = True
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'standard',
-        'extraPlugins': ['html5video'],
-        'height': 500,
-        'width': '100%',
-        'toolbarCanCollapse': False,
-        'forcePasteAsPlainText': True
-    }
-}
 
+CKEDITOR_UPLOAD_PATH = 'uploads/'
 # редиректы после входа и выходв
 LOGIN_REDIRECT_URL = '/board/'
 LOGOUT_REDIRECT_URL = '/board/'
@@ -167,14 +137,13 @@ LOGOUT_REDIRECT_URL = '/board/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ограничение на количество объявлений в день
-DAILY_POST_LIMIT=3
+DAILY_POST_LIMIT = 10
 
-# Блок активации
-ACCOUNT_ACTIVATION_DAYS=2
+# Блок активации аккаунта
+ACCOUNT_ACTIVATION_DAYS = 2
 
-DEFAULT_FROM_EMAIL=os.getenv('DEFAULT_FROM_EMAIL')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
-# Этого раздела может не быть, добавьте его в указанном виде.
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
@@ -185,16 +154,15 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS =3
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 
-
-EMAIL_HOST = 'smtp.yandex.ru'  # адрес сервера Яндекс-почты для всех один и тот же
-EMAIL_PORT = 465  # порт smtp сервера тоже одинаковый
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
 EMAIL_HOST_USER = os.getenv(
-    'EMAIL_HOST_USER')  # ваше имя пользователя, например, если ваша почта user@yandex.ru, то сюда надо писать user, иными словами, это всё то что идёт до собаки
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # пароль от почты
-EMAIL_USE_SSL = True  # Яндекс использует ssl, подробнее о том, что это, почитайте в дополнительных источниках, но включать его здесь обязательно
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')  #
+    'EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_USE_SSL = True
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
 # установлен redis для работы с celery
 CELERY_BROKER_URL = 'redis://localhost:6379'
@@ -202,5 +170,12 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'Europe/Moscow'  # для выполнения задач по расписанию
-CELERY_TASK_TIME_LIMIT = 30 * 60  # время жизни таска в секундах
+CELERY_TIMEZONE = 'Europe/Moscow'
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+ADMINS = [
+    ('Awesome', 'awesome@example.com'),
+]

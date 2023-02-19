@@ -59,5 +59,3 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),  # а здесь работа с кастомным профилем
     path("board/", include("board.urls"), name='board'),
 ]
-if settings.DEBUG:
-    urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)#+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

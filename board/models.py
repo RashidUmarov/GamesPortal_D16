@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 
 from ckeditor.fields import RichTextField
-from ckeditor_uploader.fields import RichTextUploadingField
 
 
 # автор объявления или отклика
@@ -56,7 +55,7 @@ class Post(models.Model):
 
     author = models.ForeignKey(Author, on_delete=models.CASCADE, verbose_name='Автор')
     title = models.CharField(max_length=255, verbose_name='Заголовок')
-    content = RichTextField()#blank=True, null=True)#, verbose_name='Содержание')
+    content = RichTextField(config_name='default')
     category = models.ForeignKey('Category', on_delete=models.PROTECT, verbose_name='Категория')
     created = models.DateTimeField(auto_now_add=True, verbose_name='Дата')
     attach = models.FileField(upload_to='uploads/%Y/%m/%d/', blank=True, null=True, verbose_name='Вложение')
@@ -76,7 +75,7 @@ class Response(models.Model):
 
     post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='Объявление')
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
-    text = models.TextField(verbose_name='Отклик')
+    text = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     accepted = models.BooleanField(default=False)
 

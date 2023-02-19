@@ -48,7 +48,7 @@
         <td style="text-align: left;">{{ post.created|date:'d.m.Y' }}</td>
         <td style="text-align: center;">{{ post.category }}</td>
         <td style="text-align: left;"><a href="{% url 'profile' pk=post.author.author.id %}">{{ post.author }}</a></td>
-        <td style="text-align: left;">{{ post.content|truncatewords:20 }}</td>
+        <td style="text-align: left;">{{ post.content|safe|truncatewords:20 }}</td>
         <td>
             {# проверим право на редактирование поста #}
             {% if request.user.is_authenticated and request.user == post.author.author %}
